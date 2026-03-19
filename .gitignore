@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+
+# Compilado
+dist/
+tsc_out.txt
+
+# Config y claves (No subirlas!)
+.env
+memory.db*
+service-account.json
+credentials.json
+create_help.txt
+zoneinfo.zip
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Mac DS_Store
+.DS_Store

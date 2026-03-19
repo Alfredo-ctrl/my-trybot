@@ -1,0 +1,50 @@
+# 🚀 GUÍA DE DESPLIEGUE GRATIS EN LA NUBE (RENDER)
+
+He preparado esta carpeta (`PARA_SUBIR`) con **TODO lo único que tienes que subir**.  
+No debes subir ni el `.env`, ni el `memory.db`, ni `service-account.json`. Todo eso se configura en la nube para estar 100% seguros y que no te roben contraseñas.
+
+Sigue estos pasos **con cuidado**:
+
+## PASO 1: Subir código a GitHub
+1. Entra a https://github.com/ y crea un repositorio nuevo llamado `mi-trybot` (ponlo Privado por seguridad).
+2. Toca "uploading an existing file" (subir un archivo existente).
+3. **Arrastra TODO el contenido que hay dentro de esta carpeta `PARA_SUBIR`** a la página de GitHub. 
+   - (Asegúrate de arrastrar todos los archivos como `package.json`, `Dockerfile` y la carpeta `src`).
+4. Haz clic en "Commit changes" (Guardar cambios).
+
+## PASO 2: Conectar a Render (Gratis)
+1. Entra a https://render.com y crea una cuenta con tu GitHub.
+2. Da clic en "New" (Nuevo) y selecciona **Web Service**.
+3. Selecciona tu repositorio de GitHub `mi-trybot` y dale "Connect".
+4. Ponle el nombre que quieras a tu bot (ej. trybot).
+5. **Asegúrate de seleccionar el plan FREE (Gratis)**.
+
+## PASO 3: Configurar Secretos y Variables de Entorno (¡IMPORTANTE!)
+Render no tiene tus archivos secretos (.env, JSON), así que tienes que ponérselos ahí mismo en su panel antes de crear el servicio.
+
+1. Baja hasta donde dice **"Advanced"**.
+2. Dale clic a **"Add Environment Variable"** (Variables de Entorno). Aquí vas a copiar TODAS tus variables de tu archivo `.env` original (que se quedó fuera de esta carpeta), una por una:
+   - Key: `TELEGRAM_BOT_TOKEN` | Value: `(tu token local)`
+   - Key: `TELEGRAM_ALLOWED_USER_IDS` | Value: `(tu id)`
+   - ...y todas las demás variables (Groq, Gemini, etc).
+   
+3. **Archivos Secretos (Secret Files):** 
+   En esa misma zona "Advanced", dale clic a **"Add Secret File"**.
+   - Nombre de archivo: `service-account.json`
+   - Contenido: (Abre el archivo `service-account.json` que dejaste en `c:\trybot\`, copia TODO el texto que tiene adentro y pégalo aquí).
+   - Haz lo mismo otra vez para `credentials.json` (si lo necesitas).
+
+4. **Variables Adicionales:** 
+   Render guarda esos archivos secretos en una carpeta especial llamada `/etc/secrets/`. Por lo tanto, debes agregar UNA VARIABLE DE ENTORNO MÁS para decirle a tu código dónde están y que no se pierda:
+   - Key: `GOOGLE_APPLICATION_CREDENTIALS` | Value: `/etc/secrets/service-account.json`
+4. ¡Dale clic a **"Create Web Service"** hasta abajo!
+Ahora Render instalará tu Dockerfile mágicamente.
+
+## PASO 4: Evitar que el bot se duerma (Antisleep)
+El plan gratis de Render "duerme" sus servidores si no reciben una visita a la web cada 15 minutos (por eso te añadí un mini-servidor web secreto en esta carpeta).
+1. Cuando Render termine de cargar, te dará un enlace (ej: `https://trybot-xyza.onrender.com`).
+2. Entra a esa dirección en tu navegador y verás el mensaje **"Trybot is alive!"**.
+3. Para que no se duerma jamás: crea una cuenta en https://cron-job.org (es gratis).
+4. Crea un "Cron Job", y pon tu enlace `https://trybot-xyza.onrender.com`. Configúralo para que lo visite cada **14 minutos**.
+
+¡Listo! Tu bot vivirá en la nube 24/7 sin costarte absolutamente nada ✅
